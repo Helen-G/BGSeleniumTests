@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+
+namespace BGSeleniumTests
+{
+    public static class ExtensionMethods
+    {
+        public static IWebElement FindElementWait(this IWebDriver driver, By by)
+        {
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            IEnumerable<IWebElement> foundElements = null;
+            wait.Until(d =>
+            {
+                foundElements = driver.FindElements(by).Where(x => x.Displayed && x.Enabled);
+                return foundElements.Count() != 0;
+            });
+            return foundElements.First();
+        }
+    }
+}
