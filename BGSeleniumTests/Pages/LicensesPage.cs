@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,13 +8,13 @@ using OpenQA.Selenium;
 
 namespace BGSeleniumTests.Pages
 {
-    class LicensesPage : PageBase
+    class LicensingAppPage : PageBase
     {
-        public LicensesPage(IWebDriver driver) : base(driver)
+        public LicensingAppPage(IWebDriver driver) : base(driver)
         {
         }
 
-        public string GetAppMenuItem
+        public string AppMenuItem
         {
             get
             {
@@ -24,6 +25,17 @@ namespace BGSeleniumTests.Pages
         protected override string GetPageUrl()
         {
             return "a02/o";
+        }
+
+        public List<string> DisplayedTabs()
+        {
+            var tabBar = _driver.FindElements(By.XPath("//ul[@id='tabBar']/li/a"));
+            List<string> result = new List<string>();
+            foreach (IWebElement tab in tabBar)
+            {
+                result.Add(tab.Text);
+            }
+            return result;
         }
     }
 }

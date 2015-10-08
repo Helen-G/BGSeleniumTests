@@ -16,6 +16,11 @@ namespace BGSeleniumTests
             _driver = driver;
         }
 
+        public TabBar TabBar
+        {
+            get { return new TabBar(_driver); }
+        }
+
         public string Url
         {
             get { return _driver.Url; }

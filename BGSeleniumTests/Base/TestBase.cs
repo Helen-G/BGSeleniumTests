@@ -32,24 +32,24 @@ namespace SeleniumTestsProject
             _driver = CreateChromeDriver();
             _driver.Manage().Window.Size = new Size(1200, 900);
             Login(AppLogin, AppPassword);
-            _driver.Manage().Cookies.DeleteAllCookies();
+            //_driver.Manage().Cookies.DeleteAllCookies();
             
         }
 
-        private LicensesPage Login(string login, string password)
+        private LicensingAppPage Login(string login, string password)
         {
-            _driver.Navigate().GoToUrl("https://login.salesforce.com/");
-            var loginField = _driver.FindElement(By.Id("username"));
-            loginField.SendKeys(login);
-            var passwordField = _driver.FindElement(By.Id("password"));
-            passwordField.SendKeys(password);
-            var loginButton = _driver.FindElement(By.Id("Login"));
-            loginButton.Click();
+            _driver.Navigate().GoToUrl("https://login.salesforce.com/?un=masterrelease@basicgov.com&pw=Cloudbench13c");
+            //var loginField = _driver.FindElement(By.Id("username"));
+            //loginField.SendKeys(login);
+            //var passwordField = _driver.FindElement(By.Id("password"));
+            //passwordField.SendKeys(password);
+            //var loginButton = _driver.FindElement(By.Id("Login"));
+            //loginButton.Click();
 
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
             wait.Until(ExpectedConditions.ElementExists(By.Id("home_Tab")));
 
-            var licensesPage = new LicensesPage(_driver);
+            var licensesPage = new LicensingAppPage(_driver);
             return licensesPage;
         }
 
@@ -71,7 +71,9 @@ namespace SeleniumTestsProject
 
             //DesiredCapabilities capability = DesiredCapabilities.Chrome();
             //capability.SetCapability("applicationCacheEnabled", "false");
-            return new ChromeDriver(chromeDriverPath);
+            var options = new ChromeOptions();
+            options.AddArgument("--enable-automatic-password-saving");
+            return new ChromeDriver(chromeDriverPath, options);
         }
 
         public void SaveScreenshot()
