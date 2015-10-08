@@ -27,14 +27,6 @@ namespace BGSeleniumTests
             var text = FindElementWait(driver, by).Text;
             return text;
         }
-
-        public static IWebElement OpenTab(this IWebDriver driver, string tabName)
-        {
-            var name = $"//a[@title=\'{tabName}\']";
-            var element = driver.FindElementWait(By.XPath(name));
-            element.Click();
-            return element;
-        }
     }
 
 }

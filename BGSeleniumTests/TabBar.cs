@@ -7,23 +7,28 @@ using OpenQA.Selenium;
 
 namespace BGSeleniumTests
 {
-    public class TabBar : PageBase
+    public class TabBar
     {
+        protected readonly IWebDriver _driver;
 
-        public TabBar(IWebDriver driver) : base(driver)
+        public TabBar(IWebDriver driver)
         {
-
+            _driver = driver;
         }
+
 
         public LicensesPage OpenLicensesPage()
         {
-            //_driver.OpenTab("Licenses");
+            OpenTab("Licenses");
             return new LicensesPage(_driver);
         }
 
-        protected override string GetPageUrl()
+        private IWebElement OpenTab(string tabName)
         {
-            throw new NotImplementedException();
+            var name = $"//a[@title=\'{tabName}\']";
+            var element = _driver.FindElementWait(By.XPath(name));
+            element.Click();
+            return element;
         }
     }
 }

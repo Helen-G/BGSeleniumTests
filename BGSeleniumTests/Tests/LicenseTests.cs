@@ -42,10 +42,9 @@ namespace BGSeleniumTests.Tests
         [Test]
         public void Can_view_Licenses_list()
         {
-            _driver.OpenTab("Licenses Tab");
-            //var licensesTab = _licensingAppPage.TabBar.OpenLicensesPage();
-            var licensesTab = _tabBar.OpenLicensesPage();
-            Assert.AreEqual("Licenses", licensesTab.PageTitle);
+            var licensespage = _licensingAppPage.TabBar.OpenLicensesPage();
+            
+            Assert.AreEqual("Licenses", licensespage.PageTitle);
 
         }
     }
