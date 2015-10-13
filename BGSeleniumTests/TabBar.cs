@@ -19,13 +19,13 @@ namespace BGSeleniumTests
 
         public LicensesPage OpenLicensesPage()
         {
-            OpenTab("Licenses Tab");
+            OpenTab("Licenses");
             return new LicensesPage(_driver);
         }
 
         private IWebElement OpenTab(string tabName)
         {
-            var name = $"//a[@title=\'{tabName}\']";
+            var name = $"//a[text()=\'{tabName}\']";
             var element = _driver.FindElementWait(By.XPath(name));
             element.Click();
             return element;

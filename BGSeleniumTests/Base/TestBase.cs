@@ -21,27 +21,17 @@ namespace SeleniumTestsProject
         private const string AppLogin = "masterrelease@basicgov.com";
         private const string AppPassword = "Cloudbench13c";
 
-
         [TestFixtureSetUp]
         public virtual void BeforeAll()
         {
             _driver = CreateChromeDriver();
             _driver.Manage().Window.Size = new Size(1200, 900);
             Login(AppLogin, AppPassword);
-            //_driver.Manage().Cookies.DeleteAllCookies();
-            
         }
 
         private LicensingAppPage Login(string login, string password)
         {
             _driver.Navigate().GoToUrl("https://login.salesforce.com/?un=masterrelease@basicgov.com&pw=Cloudbench13c");
-            //var loginField = _driver.FindElement(By.Id("username"));
-            //loginField.SendKeys(login);
-            //var passwordField = _driver.FindElement(By.Id("password"));
-            //passwordField.SendKeys(password);
-            //var loginButton = _driver.FindElement(By.Id("Login"));
-            //loginButton.Click();
-
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
             wait.Until(ExpectedConditions.ElementExists(By.Id("home_Tab")));
 
@@ -50,13 +40,13 @@ namespace SeleniumTestsProject
         }
 
         [TestFixtureTearDown]
-        public void AfterAll()
+        public virtual void AfterAll()
         {
             _driver.Quit();
         }
 
         [TearDown]
-        public void AfterEachFailed()
+        public void AfterEach()
         {
             //SaveScreenshot();
         }
@@ -64,11 +54,10 @@ namespace SeleniumTestsProject
         static IWebDriver CreateChromeDriver()
         {
             string chromeDriverPath = Environment.CurrentDirectory + @"\..\..\..\tools";
-
             //DesiredCapabilities capability = DesiredCapabilities.Chrome();
             //capability.SetCapability("applicationCacheEnabled", "false");
             var options = new ChromeOptions();
-            options.AddArgument("--enable-automatic-password-saving");
+            options.AddArgument("--disable-extensions");
             return new ChromeDriver(chromeDriverPath, options);
         }
 
@@ -87,9 +76,6 @@ namespace SeleniumTestsProject
             screenshot.SaveAsFile(fullPath, ImageFormat.Png);
             Thread.Sleep(500);
         }
-
-       
-
 
     }
 }

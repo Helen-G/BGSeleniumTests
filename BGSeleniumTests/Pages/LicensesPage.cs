@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using OpenQA.Selenium;
 
 namespace BGSeleniumTests.Pages
@@ -14,6 +15,15 @@ namespace BGSeleniumTests.Pages
             throw new NotImplementedException();
         }
 
+        public string CurrentView => _driver.FindElementText(By.
+            XPath("//select[@id='fcf']/option[@selected='selected']"));
 
+        public NewLicensePage OpenNewLicensePage()
+        {
+            var newButton = _driver.FindElementWait(By.XPath("//input[@value=' New ']"));
+            newButton.Click();
+            var newLicensePage = new NewLicensePage(_driver);
+            return newLicensePage;
+        }
     }
 }

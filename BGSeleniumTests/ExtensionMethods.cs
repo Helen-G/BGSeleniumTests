@@ -27,6 +27,8 @@ namespace BGSeleniumTests
             var text = FindElementWait(driver, by).Text;
             return text;
         }
+
+        
     }
 
 }

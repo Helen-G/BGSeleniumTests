@@ -68,6 +68,8 @@
     <Compile Include="Base\PageBase.cs" />
     <Compile Include="Pages\LicensesPage.cs" />
     <Compile Include="Pages\LicensingAppPage.cs" />
+    <Compile Include="Pages\NewLicensePage.cs" />
+    <Compile Include="Pages\ViewLicensePage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Base\TestBase.cs" />
     <Compile Include="TabBar.cs" />

@@ -10,31 +10,18 @@ namespace BGSeleniumTests.Pages
 {
     class LicensingAppPage : PageBase
     {
-        public LicensingAppPage(IWebDriver driver) : base(driver)
-        {
-        }
+        public LicensingAppPage(IWebDriver driver) : base(driver) {}
 
-        public string AppMenuItem
-        {
-            get
-            {
-                return _driver.FindElementWait(By.Id("tsidLabel")).Text;
-            }
-        }
+        public string AppMenuItem => _driver.FindElementWait(By.Id("tsidLabel")).Text;
 
-        protected override string GetPageUrl()
-        {
-            return "a02/o";
-        }
+        protected override string GetPageUrl() => "a02/o";
 
         public List<string> DisplayedTabs()
         {
             var tabBar = _driver.FindElements(By.XPath("//ul[@id='tabBar']/li/a"));
             List<string> result = new List<string>();
             foreach (IWebElement tab in tabBar)
-            {
                 result.Add(tab.Text);
-            }
             return result;
         }
     }
