@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BGSeleniumTests.Pages;
 using OpenQA.Selenium;
 
 namespace BGSeleniumTests
@@ -15,7 +16,6 @@ namespace BGSeleniumTests
         {
             _driver = driver;
         }
-
 
         public LicensesPage OpenLicensesPage()
         {
