@@ -19,7 +19,7 @@ namespace BGSeleniumTests
 
         public LicensesPage OpenLicensesPage()
         {
-            OpenTab("Licenses");
+            OpenTab("Licenses Tab");
             return new LicensesPage(_driver);
         }
 
