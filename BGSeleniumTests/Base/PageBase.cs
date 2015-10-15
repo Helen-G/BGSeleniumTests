@@ -29,6 +29,9 @@ namespace BGSeleniumTests
             _driver.Navigate().GoToUrl(url);
         }
 
-        protected abstract string GetPageUrl();
+        protected virtual string GetPageUrl()
+        {
+            return null;
+        }
     }
 }

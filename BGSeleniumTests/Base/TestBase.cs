@@ -54,8 +54,6 @@ namespace SeleniumTestsProject
         static IWebDriver CreateChromeDriver()
         {
             string chromeDriverPath = Environment.CurrentDirectory + @"\..\..\..\tools";
-            //DesiredCapabilities capability = DesiredCapabilities.Chrome();
-            //capability.SetCapability("applicationCacheEnabled", "false");
             var options = new ChromeOptions();
             options.AddArgument("--disable-extensions");
             return new ChromeDriver(chromeDriverPath, options);

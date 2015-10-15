@@ -12,7 +12,6 @@ namespace BGSeleniumTests.Tests
     class LicensingAppTests : TestBase
     { 
         private LicensingAppPage _licensingAppPage;
-        private TabBar _tabBar;
 
         [TestFixtureSetUp]
         public override void BeforeAll()
@@ -46,16 +45,39 @@ namespace BGSeleniumTests.Tests
         }
 
         [Test]
-        public void Can_create_a_license_of_business_type()
+        public void Can_create_a_license_of_business_type_and_view_two_generated_submissions()
         {
+            //create a license
             var licensesPage = _licensingAppPage.TabBar.OpenLicensesPage();
             var newLicensePage = licensesPage.OpenNewLicensePage();
             var viewLicensePage = newLicensePage.CreateLicense("Business");
 
+            //verify the license name
             var currentDate = DateTime.Now.ToString("yyMM");
             Assert.That(viewLicensePage.Name, Is.StringContaining(currentDate));
+
+            //verify the names of two automatically generated submissions
+            Assert.AreEqual("Test Submission 2", viewLicensePage.Submissions[0]);
+            Assert.AreEqual("Test Submission 1", viewLicensePage.Submissions[1]);
         }
 
+        [Test]
+        public void Can_upload_a_file_to_complete_license_submission_and_view_a_fee()
+        {
+            //create a license
+            var licensesPage = _licensingAppPage.TabBar.OpenLicensesPage();
+            var newLicensePage = licensesPage.OpenNewLicensePage();
+            var viewLicensePage = newLicensePage.CreateLicense("Business");
+
+            //upload a submission file 
+            var manageSubmissionsPage = viewLicensePage.OpenManageSubmissionsPage();
+            _driver.UploadFile();
+
+            Assert.AreEqual("Submitted", viewLicensePage.LicenseStatus);
+            Assert.IsNotEmpty(viewLicensePage.FeesList);
+            Assert.AreEqual("Test License Fee", viewLicensePage.LicenseFeeType);
+            Assert.AreEqual("$100.00", viewLicensePage.LicenseFeeAmount);
+        }
 
 
     }
