@@ -11,32 +11,19 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
-
 namespace SeleniumTestsProject
 {
     [TestFixture]
     public abstract class TestBase
     {
         protected IWebDriver _driver;
-        private const string AppLogin = "masterrelease@basicgov.com";
-        private const string AppPassword = "Cloudbench13c";
 
         [TestFixtureSetUp]
         public virtual void BeforeAll()
         {
             _driver = CreateChromeDriver();
             _driver.Manage().Window.Size = new Size(1200, 900);
-            Login(AppLogin, AppPassword);
-        }
-
-        private LicensingAppPage Login(string login, string password)
-        {
-            _driver.Navigate().GoToUrl("https://login.salesforce.com/?un=masterrelease@basicgov.com&pw=Cloudbench13c");
-            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(30));
-            wait.Until(ExpectedConditions.ElementExists(By.Id("home_Tab")));
-
-            var licensesPage = new LicensingAppPage(_driver);
-            return licensesPage;
+            Login();
         }
 
         [TestFixtureTearDown]
@@ -46,9 +33,12 @@ namespace SeleniumTestsProject
         }
 
         [TearDown]
-        public void AfterEach()
+        public void AfterEachFail()
         {
-            //SaveScreenshot();
+            if (TestContext.CurrentContext.Result.Status == TestStatus.Failed)
+            {
+                SaveScreenshot();
+            }
         }
 
         static IWebDriver CreateChromeDriver()
@@ -57,6 +47,13 @@ namespace SeleniumTestsProject
             var options = new ChromeOptions();
             options.AddArgument("--disable-extensions");
             return new ChromeDriver(chromeDriverPath, options);
+        }
+
+        private void Login()
+        {
+            _driver.Navigate().GoToUrl("https://login.salesforce.com/?un=masterrelease@basicgov.com&pw=Cloudbench13c");
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            wait.Until(ExpectedConditions.ElementExists(By.Id("home_Tab")));
         }
 
         public void SaveScreenshot()
@@ -75,5 +72,11 @@ namespace SeleniumTestsProject
             Thread.Sleep(500);
         }
 
+
+    }
+
+    public class CategorySmoke : CategoryAttribute
+    {
+        public CategorySmoke() : base("Smoke") { }
     }
 }

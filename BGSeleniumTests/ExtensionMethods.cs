@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Runtime.Remoting.Channels;
@@ -25,6 +26,18 @@ namespace BGSeleniumTests
                 return foundElements.Count() != 0;
             });
             return foundElements.First();
+        }
+
+        public static IEnumerable<IWebElement> FindElementsWait(this IWebDriver driver, By by)
+        {
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            IEnumerable<IWebElement> foundElements = null;
+            wait.Until(d =>
+            {
+                foundElements = driver.FindElements(by).Where(x => x.Displayed && x.Enabled);
+                return foundElements.Count() != 0;
+            });
+            return foundElements;
         }
 
         public static string FindElementText(this IWebDriver driver, By by)
@@ -67,6 +80,8 @@ namespace BGSeleniumTests
             var doneButton = driver.FindElementWait(By.XPath("//input[@value='Done']"));
             doneButton.Click();
         }
-    }
 
+        
+
+}
 }

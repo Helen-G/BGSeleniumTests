@@ -29,13 +29,32 @@ namespace BGSeleniumTests.Pages
 
         public string LicenseStatus => _driver.FindElementText(By.XPath("//td[text()='Status']/following-sibling::td/div"));
 
-        public ReadOnlyCollection<IWebElement> FeesList
-            => _driver.FindElements(By.XPath("//td[text()='Test License Fee']/preceding-sibling::th/a"));
+        public ViewFeePage OpenFeePage()
+        {
+            FeeNumber.Click();
+            var page = new ViewFeePage(_driver);
+            return page;
+        }
 
-        public string LicenseFeeType => _driver.FindElementText(By.XPath("//td[text()='Test License Fee']"));
+        #region Fees list
 
-        public string LicenseFeeAmount => _driver.FindElementText(By.XPath("(//td[text()='Test License Fee']/following-sibling::td)[1]"));
- 
+        public IEnumerable<IWebElement> FeesList
+            => _driver.FindElementsWait(By.XPath("//td[text()='Test License Fee']/preceding-sibling::th/a"));
+
+        public string FeeType => _driver.FindElementText(By.XPath("//td[text()='Test License Fee']"));
+
+        public string FeeAmount => _driver.FindElementText(By.XPath("(//td[text()='Test License Fee']/following-sibling::td)[1]"));
+
+        public IWebElement FeeNumber => _driver.FindElement(By.XPath("//td[text()='Test License Fee']/preceding-sibling::th/a"));
+
+        public string Receipt { get; set; }
+
+#endregion
+
+        public string InspectionType => _driver.FindElementText(By.XPath("//td[text()='Test Inspection']"));
+
+        public IWebElement InspectionNumber => _driver.FindElementWait(By.XPath("//td[text()='Test Inspection']/preceding-sibling::th/a"));
+
         public ManageSubmissionsPage OpenManageSubmissionsPage()
         {
             var manageSubmissionsButton = _driver.FindElementWait(By.XPath("//input[@value='Manage Submissions']"));
@@ -43,13 +62,12 @@ namespace BGSeleniumTests.Pages
             var manageSubmissionsPage = new ManageSubmissionsPage(_driver);
             return manageSubmissionsPage;
         }
-    }
 
-    public class ManageSubmissionsPage : PageBase
-    {
-        public ManageSubmissionsPage(IWebDriver driver) : base(driver)
+        public ViewInspectionPage OpenViewInspectionPage()
         {
-
+            InspectionNumber.Click();
+            var page = new ViewInspectionPage(_driver);
+            return page;
         }
 
     }

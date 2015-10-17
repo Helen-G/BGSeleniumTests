@@ -33,5 +33,16 @@ namespace BGSeleniumTests
         {
             return null;
         }
+
+        public List<string> Elements(By by)
+        {
+            var result = new List<string>();
+            var elements = _driver.FindElements(by);
+            if (elements.Count != 0)
+            {
+                result.AddRange(elements.Select(element => element.Text));
+            }
+            return result;
+        }
     }
 }

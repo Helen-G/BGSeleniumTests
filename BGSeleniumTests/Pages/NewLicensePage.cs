@@ -19,7 +19,7 @@ namespace BGSeleniumTests.Pages
             var applicantLookup = _driver.FindElementWait(By.Id("CF00NF000000BHoFV_lkwgt"));
             
             string currentWindow = _driver.CurrentWindowHandle;
-            PopupWindowFinder finder = new PopupWindowFinder(_driver);
+            var finder = new PopupWindowFinder(_driver);
 
             //click the lookup icon, switch to the window and iframe
             var lookupWindowHandle = finder.Click(applicantLookup);
