@@ -23,7 +23,7 @@ namespace BGSeleniumTests.Pages
 
         public ViewInspectionPage CompleteChecklist()
         {
-            var saveAndCompleteButton = _driver.FindElementWait(By.XPath("//input[text()='checklistPage']"));
+            var saveAndCompleteButton = _driver.FindElementWait(By.XPath("//div[@class='pbBottomButtons']//input[@value='Save & Complete']"));
             saveAndCompleteButton.Click();
             _driver.SwitchTo().Alert().Accept();
             var page = new ViewInspectionPage(_driver);

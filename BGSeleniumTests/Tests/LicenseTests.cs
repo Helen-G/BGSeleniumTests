@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using BGSeleniumTests.Pages;
 using NUnit.Framework;
+using OpenQA.Selenium.Support.UI;
 using SeleniumTestsProject;
 
 namespace BGSeleniumTests.Tests
@@ -56,26 +58,32 @@ namespace BGSeleniumTests.Tests
             var currentDate = DateTime.Now.ToString("yyMM");
             Assert.That(viewLicensePage.Name, Is.StringContaining(currentDate));
 
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            wait.Until(x =>
+            {
+                
+                return viewLicensePage.Submissions != null;
+            });
+
             //verify the names of two automatically generated submissions
             Assert.AreEqual("Test Submission 2", viewLicensePage.Submissions[0]);
             Assert.AreEqual("Test Submission 1", viewLicensePage.Submissions[1]);
         }
 
         [Test, CategorySmoke]
-        public void Can_complete_license_submission_and_pay_a_fee_via_cart()
+        public void Can_create_license_and_deny_approve_inspections()
         {
             //create a license of business type
             var licensesPage = _licensingAppPage.TabBar.OpenLicensesPage();
             var newLicensePage = licensesPage.OpenNewLicensePage();
             var viewLicensePage = newLicensePage.CreateLicense(type:"Business");
-
             var licensePageUrl = viewLicensePage.Url;
 
-            //upload a submission file 
+            //upload a submission file, and check license type and generated fee
             viewLicensePage.OpenManageSubmissionsPage();
             _driver.UploadFile();
 
-            Assert.AreEqual("Submitted", viewLicensePage.LicenseStatus);
+            Assert.AreEqual("Submitted", viewLicensePage.Status);
             Assert.IsNotEmpty(viewLicensePage.FeesList);
             Assert.AreEqual("Test License Fee", viewLicensePage.FeeType);
             Assert.AreEqual("$100.00", viewLicensePage.FeeAmount);
@@ -95,30 +103,73 @@ namespace BGSeleniumTests.Tests
             Assert.IsNotNull(viewLicensePage.InspectionNumber);
             Assert.AreEqual("Test Inspection", viewLicensePage.InspectionType);
 
-            //open the inspection details page
-            var viewInspectionPage = viewLicensePage.OpenViewInspectionPage();
+            //open the inspection checklist page and check that
+            //it has 2 sections and 2 questions in each
+            var viewInspectionPage = viewLicensePage.OpenInspectionDetailsPage();
             var checklistPage = viewInspectionPage.OpenChecklistPage();
-
-            //verify that checklist page has 2 sections and 2 questions in each
             var sections = checklistPage.Elements(checklistPage.SectionsPath);
+
             Assert.AreEqual("Hand Washing", sections[0]);
             Assert.AreEqual("Food Safety", sections[1]);
 
             var questions = checklistPage.Elements(checklistPage.QuestionsPath);
             Assert.AreEqual(4, questions.Count);
 
-            //complete the inspection and set status to Denied
+            //complete the inspection and set inspection status to Denied
             checklistPage.AnswerPassForAll();
             viewInspectionPage = checklistPage.CompleteChecklist();
-
             var editInspectionPage = viewInspectionPage.OpenEditInspectionPage();
-            var viewLInspectionPage = editInspectionPage.ChangeStatus("Denied");
+            viewInspectionPage = editInspectionPage.ChangeStatus("Denied");
 
-            Assert.AreEqual("Denied", viewLInspectionPage.Status);
+            Assert.AreEqual("Denied", viewInspectionPage.Status);
 
-            //view a generated re-inspection record on the license details page 
+            //view a generated re-inspection record on the license details page
+            var reinspectionNumber = viewInspectionPage.ReinspectionNumber;
+
+            Assert.IsNotNull(reinspectionNumber);
+            Assert.AreEqual("Reinspection", viewInspectionPage.ReinspectionType);
+
+            //open re-inspection details page from previous inspection details page
+            var viewReinspectionPage = viewInspectionPage.OpenReinspectionDetailsPage(reinspectionNumber);
+            Assert.AreEqual(reinspectionNumber, viewReinspectionPage.Title);
+
+            //from license details page
+            _driver.Navigate().GoToUrl(licensePageUrl);
+            viewLicensePage = new ViewLicensePage(_driver);
+            viewReinspectionPage = viewLicensePage.OpenReinspectionDetailsPage(reinspectionNumber);
+
+            Assert.AreEqual(reinspectionNumber, viewReinspectionPage.Title);
+
+            //open reinspection checklist, complete it, and set inspection status to Approved
+            var reinspectionChecklistPage = viewReinspectionPage.OpenChecklistPage();
+            reinspectionChecklistPage.AnswerPassForAll();
+            viewReinspectionPage = reinspectionChecklistPage.CompleteChecklist();
+            var editReinspectionPage = viewReinspectionPage.OpenEditInspectionPage();
+            viewReinspectionPage = editReinspectionPage.ChangeStatus("Approved");
+
+            Assert.AreEqual("Approved", viewReinspectionPage.Status);
+
+            //check license status and generated license certificate
+            _driver.Navigate().GoToUrl(licensePageUrl);
+            viewLicensePage = new ViewLicensePage(_driver);
+
+            Assert.AreEqual("Issued", viewLicensePage.Status);
+
+            Thread.Sleep(TimeSpan.FromSeconds(5));
+            _driver.Navigate().Refresh();
+            _driver.ScrollPage(0, 1000);
+
+            //var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(10));
+            //wait.Until(x =>
+            //{
+            //    _driver.Navigate().Refresh();
+            //    _driver.ScrollPage(0, 1000);
+            //    return viewLicensePage.Attachement != String.Empty;
+            //});
+
+            Assert.IsNotEmpty(viewLicensePage.Attachement);
+            Assert.AreEqual("License_Certificate.pdf", viewLicensePage.Attachement);
         }
-
 
     }
 }

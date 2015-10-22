@@ -81,7 +81,12 @@ namespace BGSeleniumTests
             doneButton.Click();
         }
 
-        
+        public static void ScrollPage(this IWebDriver driver, int x, int y)
+        {
+            var coordinatesToScroll = $"scroll('{x}', '{y}')";
+            IJavaScriptExecutor jse = (IJavaScriptExecutor)driver;
+            jse.ExecuteScript(coordinatesToScroll);
+        }
 
 }
 }

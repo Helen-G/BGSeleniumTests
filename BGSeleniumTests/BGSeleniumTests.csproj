@@ -67,6 +67,7 @@
   <ItemGroup>
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Base\PageBase.cs" />
+    <Compile Include="Pages\EditInspectionPage.cs" />
     <Compile Include="Pages\LicensesPage.cs" />
     <Compile Include="Pages\LicensingAppPage.cs" />
     <Compile Include="Pages\ManageSubmissionsPage.cs" />

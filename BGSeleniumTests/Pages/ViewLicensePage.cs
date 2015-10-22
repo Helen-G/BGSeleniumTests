@@ -13,6 +13,8 @@ namespace BGSeleniumTests.Pages
 
         public string Name => _driver.FindElementText(By.XPath("//div[@class='content']/h2"));
 
+        public string Status => _driver.FindElementText(By.XPath("//td[text()='Status']/following-sibling::td/div"));
+
         public List<string> Submissions
         {
             get
@@ -27,16 +29,7 @@ namespace BGSeleniumTests.Pages
             }
         }
 
-        public string LicenseStatus => _driver.FindElementText(By.XPath("//td[text()='Status']/following-sibling::td/div"));
-
-        public ViewFeePage OpenFeePage()
-        {
-            FeeNumber.Click();
-            var page = new ViewFeePage(_driver);
-            return page;
-        }
-
-        #region Fees list
+#region Fees list
 
         public IEnumerable<IWebElement> FeesList
             => _driver.FindElementsWait(By.XPath("//td[text()='Test License Fee']/preceding-sibling::th/a"));
@@ -51,9 +44,25 @@ namespace BGSeleniumTests.Pages
 
 #endregion
 
+#region Inspection list
+
         public string InspectionType => _driver.FindElementText(By.XPath("//td[text()='Test Inspection']"));
 
         public IWebElement InspectionNumber => _driver.FindElementWait(By.XPath("//td[text()='Test Inspection']/preceding-sibling::th/a"));
+
+        public IWebElement ReinspectionNumber => _driver.FindElementWait(By.XPath("//td[text()='Reinspection']/preceding-sibling::th/a"));
+
+        public string Attachement
+            => _driver.FindElementText(By.XPath("(//th[text()='Attachment']/following-sibling::td/a)[1]"));
+
+        #endregion
+
+        public ViewFeePage OpenFeePage()
+        {
+            FeeNumber.Click();
+            var page = new ViewFeePage(_driver);
+            return page;
+        }
 
         public ManageSubmissionsPage OpenManageSubmissionsPage()
         {
@@ -63,12 +72,18 @@ namespace BGSeleniumTests.Pages
             return manageSubmissionsPage;
         }
 
-        public ViewInspectionPage OpenViewInspectionPage()
+        public ViewInspectionPage OpenInspectionDetailsPage()
         {
             InspectionNumber.Click();
             var page = new ViewInspectionPage(_driver);
             return page;
         }
 
+        public ViewInspectionPage OpenReinspectionDetailsPage(string reinspectionNumber)
+        {
+            ClickObjectUrlInRelatedList(reinspectionNumber);
+            var page = new ViewInspectionPage(_driver);
+            return page;
+        }
     }
 }

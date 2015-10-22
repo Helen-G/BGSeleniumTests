@@ -1,12 +1,18 @@
 using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
 
 namespace BGSeleniumTests.Pages
 {
     public class ViewInspectionPage : PageBase
     {
         public ViewInspectionPage(IWebDriver driver) : base(driver) {}
+
+        public string Title => _driver.FindElementText(By.XPath("//h2[@class='pageDescription']"));
+
         public string Status => _driver.FindElementText(By.XPath("//td[text()='Status']/following-sibling::td/div"));
+
+        public string ReinspectionNumber => _driver.FindElementText(By.XPath("//td[text()='Reinspection']/preceding-sibling::th/a"));
+
+        public string ReinspectionType => _driver.FindElementText(By.XPath("//td[text()='Reinspection']"));
 
         public ViewCheckListPage OpenChecklistPage()
         {
@@ -24,25 +30,15 @@ namespace BGSeleniumTests.Pages
             var page = new EditInspectionPage(_driver);
             return page;
         }
-    }
 
-    public class EditInspectionPage : PageBase
-    {
-        public EditInspectionPage(IWebDriver driver) : base(driver)
+        public ViewInspectionPage OpenReinspectionDetailsPage(string reinspectionNumber)
         {
-        }
-
-        public ViewInspectionPage ChangeStatus(string status)
-        {
-            var statusList = _driver.FindElementWait(By.XPath("(//div[@class='requiredInput']//select)[2]"));
-            var statusField = new SelectElement(statusList);
-            statusField.SelectByText(status);
-
-            var saveButton = _driver.FindElementWait(By.XPath("((//td[@id='topButtonRow']//input)[1]"));
-            saveButton.Click();
+            var path = $"//a[text()='{reinspectionNumber}']";
+            var reinspectionNumberUrl = _driver.FindElementWait(By.XPath(path));
+            reinspectionNumberUrl.Click();
             var page = new ViewInspectionPage(_driver);
             return page;
         }
-            
     }
+
 }
